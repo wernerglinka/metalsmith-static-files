@@ -1,4 +1,4 @@
-# metalsmith-add
+# metalsmith-static
 
 A Metalsmith plugin to copy a directory to the build directory
 
@@ -11,21 +11,21 @@ A Metalsmith plugin to copy a directory to the build directory
 NPM:
 
 ```
-npm install metalsmith-add
+npm install metalsmith-static
 ```
 
 Yarn:
 
 ```
-yarn add metalsmith-add
+yarn add metalsmith-static
 ```
 
 ## Usage
 
-Pass `metalsmith-add` to `metalsmith.use`. The `source` directory path is resolved to `metalsmith.directory()`. The `destination` path is resolved to `metalsmith.destination()`.
+Pass `metalsmith-static` to `metalsmith.use`. The `source` directory path is resolved to `metalsmith.directory()`. The `destination` path is resolved to `metalsmith.destination()`.
 
 ```js
-const add = require('metalsmith-add')
+const add = require('metalsmith-static')
 
 metalsmith.use(add({
   source: 'src/assets/',
@@ -38,29 +38,29 @@ Typically, you want to use this plugin somewhere at the start of the chain, befo
 
 ### Debug
 
-To enable debug logs, set the `DEBUG` environment variable to `metalsmith-add`:
+To enable debug logs, set the `DEBUG` environment variable to `metalsmith-static`:
 
 Linux/Mac:
 
 ```
-DEBUG=metalsmith-add
+DEBUG=metalsmith-static
 ```
 
 Windows:
 
 ```
-set "DEBUG=metalsmith-add"
+set "DEBUG=metalsmith-static"
 ```
 
 ### CLI usage
 
-To use this plugin with the Metalsmith CLI, add `metalsmith-add` to the `plugins` key in your `metalsmith.json` file:
+To use this plugin with the Metalsmith CLI, add `metalsmith-static` to the `plugins` key in your `metalsmith.json` file:
 
 ```json
 {
   "plugins": [
     {
-      "metalsmith-add": {}
+      "metalsmith-static": {}
     }
   ]
 }
@@ -70,9 +70,9 @@ To use this plugin with the Metalsmith CLI, add `metalsmith-add` to the `plugins
 
 [MIT](LICENSE)
 
-[npm-badge]: https://img.shields.io/npm/v/metalsmith-add.svg
-[npm-url]: https://www.npmjs.com/package/metalsmith-add
+[npm-badge]: https://img.shields.io/npm/v/metalsmith-static.svg
+[npm-url]: https://www.npmjs.com/package/metalsmith-static
 [metalsmith-badge]: https://img.shields.io/badge/metalsmith-plugin-green.svg?longCache=true
 [metalsmith-url]: https://metalsmith.io
-[license-badge]: https://img.shields.io/github/license/wernerglinka/metalsmith-add
+[license-badge]: https://img.shields.io/github/license/wernerglinka/metalsmith-static
 [license-url]: LICENSE
