@@ -1,4 +1,4 @@
-# metalsmith-static
+# metalsmith-static-files
 
 A Metalsmith plugin to copy a directory to the build directory
 
@@ -11,21 +11,21 @@ A Metalsmith plugin to copy a directory to the build directory
 NPM:
 
 ```
-npm install metalsmith-static
+npm install metalsmith-static-files
 ```
 
 Yarn:
 
 ```
-yarn add metalsmith-static
+yarn add metalsmith-static-files
 ```
 
 ## Usage
 
-Pass `metalsmith-static` to `metalsmith.use`. The `source` directory path is resolved to `metalsmith.directory()`. The `destination` path is resolved to `metalsmith.destination()`.
+Pass `metalsmith-static-files` to `metalsmith.use`. The `source` directory path is resolved to `metalsmith.directory()`. The `destination` path is resolved to `metalsmith.destination()`.
 
 ```js
-const add = require('metalsmith-static')
+const add = require('metalsmith-static-files')
 
 metalsmith.use(add({
   source: 'src/assets/',
@@ -38,29 +38,29 @@ Typically, you want to use this plugin somewhere at the start of the chain, befo
 
 ### Debug
 
-To enable debug logs, set the `DEBUG` environment variable to `metalsmith-static`:
+To enable debug logs, set the `DEBUG` environment variable to `metalsmith-static-files`:
 
 Linux/Mac:
 
 ```
-DEBUG=metalsmith-static
+DEBUG=metalsmith-static-files
 ```
 
 Windows:
 
 ```
-set "DEBUG=metalsmith-static"
+set "DEBUG=metalsmith-static-files"
 ```
 
 ### CLI usage
 
-To use this plugin with the Metalsmith CLI, add `metalsmith-static` to the `plugins` key in your `metalsmith.json` file:
+To use this plugin with the Metalsmith CLI, add `metalsmith-static-files` to the `plugins` key in your `metalsmith.json` file:
 
 ```json
 {
   "plugins": [
     {
-      "metalsmith-static": {}
+      "metalsmith-static-files": {}
     }
   ]
 }
@@ -70,9 +70,9 @@ To use this plugin with the Metalsmith CLI, add `metalsmith-static` to the `plug
 
 [MIT](LICENSE)
 
-[npm-badge]: https://img.shields.io/npm/v/metalsmith-static.svg
-[npm-url]: https://www.npmjs.com/package/metalsmith-static
+[npm-badge]: https://img.shields.io/npm/v/metalsmith-static-files.svg
+[npm-url]: https://www.npmjs.com/package/metalsmith-static-files
 [metalsmith-badge]: https://img.shields.io/badge/metalsmith-plugin-green.svg?longCache=true
 [metalsmith-url]: https://metalsmith.io
-[license-badge]: https://img.shields.io/github/license/wernerglinka/metalsmith-static
+[license-badge]: https://img.shields.io/github/license/wernerglinka/metalsmith-static-files
 [license-url]: LICENSE

@@ -9,7 +9,7 @@ function fixture(p) {
   return require('path').resolve(__dirname, 'fixtures', p)
 }
 
-describe('metalsmith-static', function () {
+describe('metalsmith-static-files', function () {
   it('should export a named plugin function matching package.json name', function () {
     const namechars = name.split('-')[1]
     const camelCased = namechars.split('').reduce((str, char, i) => {

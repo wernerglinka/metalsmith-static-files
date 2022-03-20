@@ -1,10 +1,10 @@
 {
-  "name": "metalsmith-static",
+  "name": "metalsmith-static-files",
   "private": true,
   "version": "0.1.0",
   "description": "A Metalsmith plugin to copy a directory to the build directory",
   "keywords": [
-    "metalsmith-static",
+    "metalsmith-static-files",
     "metalsmith-plugin",
     "metalsmith",
     "static-site"
@@ -12,7 +12,7 @@
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wernerglinka/metalsmith-static.git"
+    "url": "git+https://github.com/wernerglinka/metalsmith-static-files.git"
   },
   "files": [
     "lib",
@@ -25,9 +25,9 @@
   "author": "Werner Glinka (https://glinka.co)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wernerglinka/metalsmith-static/issues"
+    "url": "https://github.com/wernerglinka/metalsmith-static-files/issues"
   },
-  "homepage": "https://github.com/wernerglinka/metalsmith-static#readme",
+  "homepage": "https://github.com/wernerglinka/metalsmith-static-files#readme",
   "dependencies": {
     "debug": "^4.3.3",
     "fs-extra": "^10.0.1"

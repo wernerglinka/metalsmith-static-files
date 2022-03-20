@@ -17,8 +17,8 @@
   },
   "github": {
     "release": true,
-    "releaseName": "metalsmith-static ${version}",
+    "releaseName": "metalsmith-static-files ${version}",
     "tokenRef": "GITHUB_TOKEN",
-    "assets": ["metalsmith-static-${version}.tgz"]
+    "assets": ["metalsmith-static-files-${version}.tgz"]
   }
 }
