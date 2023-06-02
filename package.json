@@ -29,20 +29,20 @@
   "homepage": "https://github.com/wernerglinka/metalsmith-static-files#readme",
   "dependencies": {
     "debug": "^4.3.4",
-    "fs-extra": "^10.1.0"
+    "fs-extra": "^11.1.1"
   },
   "devDependencies": {
     "assert-dir-equal": "^1.1.0",
     "auto-changelog": "^2.4.0",
-    "eslint": "^8.25.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.26.0",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
-    "metalsmith": "^2.5.1",
-    "mocha": "^10.1.0",
+    "metalsmith": "^2.6.0",
+    "mocha": "^10.2.0",
     "nyc": "^15.1.0",
-    "prettier": "^2.7.1",
-    "release-it": "15.5.0"
+    "prettier": "^2.8.8",
+    "release-it": "15.10.5"
   },
   "scripts": {
     "changelog": "auto-changelog -u --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",
