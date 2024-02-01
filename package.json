@@ -9,6 +9,7 @@
     "static-site"
   ],
   "main": "lib/index.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wernerglinka/metalsmith-static-files.git"
@@ -29,20 +30,20 @@
   "homepage": "https://github.com/wernerglinka/metalsmith-static-files#readme",
   "dependencies": {
     "debug": "^4.3.4",
-    "fs-extra": "^11.1.1"
+    "fs-extra": "^11.2.0"
   },
   "devDependencies": {
     "assert-dir-equal": "^1.1.0",
     "auto-changelog": "^2.4.0",
-    "eslint": "^8.41.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-import": "^2.27.5",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
-    "metalsmith": "^2.6.0",
+    "metalsmith": "^2.6.2",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
-    "prettier": "^2.8.8",
-    "release-it": "15.10.5"
+    "prettier": "^3.2.4",
+    "release-it": "17.0.3"
   },
   "scripts": {
     "changelog": "auto-changelog -u --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",
