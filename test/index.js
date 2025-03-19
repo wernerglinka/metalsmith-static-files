@@ -226,7 +226,7 @@ describe( 'metalsmith-static-files', function() {
             resolve();
           });
         });
-      } catch (e) {
+      } catch {
         assert.fail('Should not throw uncaught exceptions');
       }
     });
