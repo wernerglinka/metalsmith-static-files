@@ -61,7 +61,7 @@
     "lint": "eslint --fix .",
     "lint:check": "eslint --fix-dry-run .",
     "prepublishOnly": "npm run build",
-    "release": "npm run build && GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) node -r dotenv/config ./node_modules/.bin/release-it . --increment patch",
+    "release": "npm run build && GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) node -r dotenv/config ./node_modules/.bin/release-it . --increment minor",
     "release:check": "npm run lint:check && npm run build && GITHUB_TOKEN=$(grep GITHUB_TOKEN .env | cut -d '=' -f2) node -r dotenv/config ./node_modules/.bin/release-it . --dry-run --ci",
     "test": "c8 mocha",
     "test:e2e": "serve -l 3000 test/fixtures",
