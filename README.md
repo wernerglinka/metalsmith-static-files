@@ -77,18 +77,24 @@ Typically, you want to use this plugin somewhere at the start of the chain, befo
 
 ### Debug
 
-To enable debug logs, set the `DEBUG` environment variable to `metalsmith-static-files`:
+This plugin supports Metalsmith's built-in debugging capabilities. To enable debug logs, use the debug option in Metalsmith:
 
-Linux/Mac:
+```js
+// To debug just this plugin
+const metalsmith = Metalsmith(__dirname)
+  .debug(['metalsmith-static-files'])
+  .use(staticFiles({
+    source: 'assets',
+    destination: 'assets'
+  }));
 
-```
-DEBUG=metalsmith-static-files
-```
-
-Windows:
-
-```
-set "DEBUG=metalsmith-static-files"
+// Or to debug all plugins
+const metalsmith = Metalsmith(__dirname)
+  .debug(true)
+  .use(staticFiles({
+    source: 'assets',
+    destination: 'assets'
+  }));
 ```
 
 ### CLI usage

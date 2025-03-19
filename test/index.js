@@ -139,6 +139,74 @@ describe( 'metalsmith-static-files', function() {
       } );
   } );
 
+  it( 'should use metalsmith debug when available', function( done ) {
+    // Create a mock debug function that records calls
+    const debugCalls = [];
+    const mockMetalsmith = {
+      path: (p) => p,
+      destination: () => 'build',
+      debug: () => (...args) => {
+        debugCalls.push(args);
+        return true;
+      }
+    };
+    
+    // Create the plugin with some options
+    const pluginInstance = plugin({
+      source: 'src',
+      destination: 'dest'
+    });
+    
+    // Mock fs.copy to avoid actual filesystem operations
+    const originalCopy = fs.copy;
+    fs.copy = () => Promise.resolve();
+    
+    // Call the plugin function
+    pluginInstance({}, mockMetalsmith, () => {
+      // Restore original function
+      fs.copy = originalCopy;
+      
+      // Debug calls should have occurred
+      assert(debugCalls.length > 0, 'Debug function should have been called');
+      
+      // First call should contain options
+      assert(debugCalls[0][0].includes('options'), 'First debug call should include options');
+      assert(debugCalls[0][1].source === 'src', 'Options should include source');
+      assert(debugCalls[0][1].destination === 'dest', 'Options should include destination');
+      
+      done();
+    });
+  });
+  
+  it( 'should handle missing debug method gracefully', function( done ) {
+    // Create a mock metalsmith without debug method
+    const mockMetalsmith = {
+      path: (p) => p,
+      destination: () => 'build'
+      // No debug property
+    };
+    
+    // Create the plugin
+    const pluginInstance = plugin({
+      source: 'src',
+      destination: 'dest'
+    });
+    
+    // Mock fs.copy to avoid actual filesystem operations
+    const originalCopy = fs.copy;
+    fs.copy = () => Promise.resolve();
+    
+    // This should not throw an error despite missing debug
+    pluginInstance({}, mockMetalsmith, (err) => {
+      // Restore original function
+      fs.copy = originalCopy;
+      
+      // No error should occur
+      assert.strictEqual(err, undefined, 'No error should occur when debug is missing');
+      done();
+    });
+  });
+
   describe( 'advanced options', function() {
     it( 'should use async/await for try/catch coverage', async function() {
       try {

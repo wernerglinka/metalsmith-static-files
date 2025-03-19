@@ -1,9 +1,8 @@
 // Import declarations at the top with a consistent order
-import debug from 'debug';
 import fs from 'fs-extra';
 
-// Create debugger instance
-const debugMetalsmith = debug('metalsmith-static-files');
+// Plugin namespace for debugging
+const debugNs = 'metalsmith-static-files';
 
 /**
  * @typedef {Object} Options
@@ -68,7 +67,6 @@ function plugin(options) {
 
     const message = `Skipping metalsmith-static-files: Missing required options: ${missingOptions.join(', ')}`;
     console.warn(message);
-    debugMetalsmith(message);
 
     return function metalsmithStaticFiles(files, metalsmith, done) {
       done();
@@ -78,14 +76,16 @@ function plugin(options) {
   // Return the plugin function
   return function metalsmithStaticFiles(files, metalsmith, done) {
     try {
-      debugMetalsmith('Running with options: %O', options);
+      const debug = metalsmith.debug ? metalsmith.debug(debugNs) : () => {};
+      
+      debug('Running with options: %o', options);
       
       // Resolve source and destination paths
       const source = metalsmith.path(options.source);
       const destination = metalsmith.path(metalsmith.destination(), options.destination);
       
-      debugMetalsmith('Source directory: %s', source);
-      debugMetalsmith('Destination directory: %s', destination);
+      debug('Source directory: %s', source);
+      debug('Destination directory: %s', destination);
 
       // Ensure source directory exists
       if (!fs.existsSync(source)) {
@@ -113,7 +113,7 @@ function plugin(options) {
       // Copy the directory
       fs.copy(source, destination, copyOptions)
         .then(() => {
-          debugMetalsmith('Successfully copied files from %s to %s', source, destination);
+          debug('Successfully copied files from %s to %s', source, destination);
           done();
         })
         .catch((err) => {
