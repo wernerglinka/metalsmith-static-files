@@ -24,13 +24,52 @@ yarn add metalsmith-static-files
 
 Pass `metalsmith-static-files` to `metalsmith.use`. The `source` directory path is resolved to `metalsmith.directory()`. The `destination` path is resolved to `metalsmith.destination()`.
 
-```js
-const add = require('metalsmith-static-files')
+### ESM (ES Modules)
 
-metalsmith.use(add({
+```js
+import staticFiles from 'metalsmith-static-files';
+
+metalsmith.use(staticFiles({
+  source: 'src/assets/',
+  destination: 'assets/',
+}));
+```
+
+### CommonJS
+
+```js
+const staticFiles = require('metalsmith-static-files');
+
+metalsmith.use(staticFiles({
   source: 'src/assets/',
   destination: 'assets/',
 }))
+```
+
+## Options
+
+The plugin accepts the following options:
+
+| Option               | Type      | Default | Description                                               |
+|----------------------|-----------|---------|-----------------------------------------------------------|
+| `source`             | `string`  | -       | Source directory path relative to Metalsmith root (required) |
+| `destination`        | `string`  | -       | Destination directory path relative to build directory (required) |
+| `overwrite`          | `boolean` | `true`  | Whether to overwrite existing files                       |
+| `preserveTimestamps` | `boolean` | `false` | Whether to preserve timestamps when copying files         |
+| `filter`             | `array`   | -       | Array of glob patterns to include/exclude files (optional) |
+
+### Advanced Usage
+
+Here's an example with advanced options:
+
+```js
+metalsmith.use(staticFiles({
+  source: 'static',
+  destination: 'public',
+  overwrite: false,            // Don't overwrite existing files
+  preserveTimestamps: true,    // Keep original timestamps
+  filter: ['**/*.{jpg,png}', '!**/*.svg'] // Only include jpg/png files, exclude svg
+}));
 ```
 
 ## Plugin order
