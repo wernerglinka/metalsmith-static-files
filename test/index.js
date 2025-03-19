@@ -53,9 +53,9 @@ const compareDirectories = (actualDir, expectedDir) => {
   }
 };
 
-describe( 'metalsmith-static-files', function() {
+describe( 'metalsmith-static-files', () => {
   let metalsmith;
-  let consoleOutput = {
+  const consoleOutput = {
     warn: [],
     error: []
   };
@@ -64,7 +64,7 @@ describe( 'metalsmith-static-files', function() {
     error: console.error
   };
 
-  beforeEach( function() {
+  beforeEach( () => {
     metalsmith = Metalsmith( fixture( 'default' ) );
     // Reset console output capture
     consoleOutput.warn = [];
@@ -74,14 +74,14 @@ describe( 'metalsmith-static-files', function() {
     console.error = ( ...args ) => consoleOutput.error.push( args.join( ' ' ) );
   } );
 
-  afterEach( async function() {
+  afterEach( async () => {
     // Restore original console methods
     console.warn = originalConsole.warn;
     console.error = originalConsole.error;
     await fs.remove( fixture( 'default/build' ) ).catch( () => { } );
   } );
 
-  it( 'should properly export as a named function', function() {
+  it( 'should properly export as a named function', () => {
     // Just test the function is correctly exported as ESM
     assert.strictEqual(typeof plugin, 'function', 'Plugin should be a function');
     
@@ -103,11 +103,11 @@ describe( 'metalsmith-static-files', function() {
     global.module = originalModule;
   });
 
-  it( 'should export a named plugin function matching package.json name', function() {
+  it( 'should export a named plugin function matching package.json name', () => {
     const camelCase = name
       .split( '-' )
       .map( ( word, index ) => {
-        if ( index === 0 ) return word;
+        if ( index === 0 ) {return word;}
         return word.charAt( 0 ).toUpperCase() + word.slice( 1 );
       } )
       .join( '' );
@@ -115,7 +115,7 @@ describe( 'metalsmith-static-files', function() {
     assert.strictEqual( plugin().name, camelCase );
   } );
 
-  it( 'should handle default/empty options gracefully', function( done ) {
+  it( 'should handle default/empty options gracefully', ( done ) => {
     metalsmith
       .use( plugin() )
       .build( ( err ) => {
@@ -125,7 +125,7 @@ describe( 'metalsmith-static-files', function() {
       } );
   } );
 
-  it( 'should copy a directory to build folder', function( done ) {
+  it( 'should copy a directory to build folder', ( done ) => {
     metalsmith = Metalsmith( fixture( 'copy-directory' ) );
     metalsmith
       .use( plugin( {
@@ -139,7 +139,7 @@ describe( 'metalsmith-static-files', function() {
       } );
   } );
 
-  it( 'should use metalsmith debug when available', function( done ) {
+  it( 'should use metalsmith debug when available', ( done ) => {
     // Create a mock debug function that records calls
     const debugCalls = [];
     const mockMetalsmith = {
@@ -178,7 +178,7 @@ describe( 'metalsmith-static-files', function() {
     });
   });
   
-  it( 'should handle missing debug method gracefully', function( done ) {
+  it( 'should handle missing debug method gracefully', ( done ) => {
     // Create a mock metalsmith without debug method
     const mockMetalsmith = {
       path: (p) => p,
@@ -207,8 +207,8 @@ describe( 'metalsmith-static-files', function() {
     });
   });
 
-  describe( 'advanced options', function() {
-    it( 'should use async/await for try/catch coverage', async function() {
+  describe( 'advanced options', () => {
+    it( 'should use async/await for try/catch coverage', async () => {
       try {
         // Test the global try/catch block
         const mockMetalsmith = {
@@ -231,7 +231,7 @@ describe( 'metalsmith-static-files', function() {
       }
     });
     
-    it( 'should respect copy options', function() {
+    it( 'should respect copy options', () => {
       // Create plugin instance with various options
       const pluginInstance = plugin({
         source: 'src',
@@ -258,7 +258,7 @@ describe( 'metalsmith-static-files', function() {
       );
     } );
 
-    it( 'should filter files based on patterns', function( done ) {
+    it( 'should filter files based on patterns', ( done ) => {
       const assetDir = fixture( 'copy-directory/assets' );
       // Create a second file with different extension for testing filter
       fs.writeFileSync( path.join( assetDir, 'test.txt' ), 'test content' );
@@ -283,7 +283,7 @@ describe( 'metalsmith-static-files', function() {
         } );
     } );
     
-    it( 'should implement filter logic correctly', function() {
+    it( 'should implement filter logic correctly', () => {
       // Directly test the filter logic without mocking the filesystem
       const options = { filter: ['*.js', '!*test*'] };
       const isDirectory = true;
@@ -298,7 +298,7 @@ describe( 'metalsmith-static-files', function() {
       // Test directory case - should always return true
       fs.statSync = () => mockStat(isDirectory);
       const filterFunc = (src) => {
-        if (fs.statSync(src).isDirectory()) return true;
+        if (fs.statSync(src).isDirectory()) {return true;}
         return options.filter.some(pattern => new RegExp(pattern.replace(/\*/g, '.*')).test(src));
       };
       
@@ -323,8 +323,8 @@ describe( 'metalsmith-static-files', function() {
     } );
   } );
 
-  describe( 'error handling', function() {
-    it( 'should handle missing source directory with appropriate error', function( done ) {
+  describe( 'error handling', () => {
+    it( 'should handle missing source directory with appropriate error', ( done ) => {
       const nonExistentPath = 'non-existent-directory';
 
       metalsmith
@@ -332,7 +332,7 @@ describe( 'metalsmith-static-files', function() {
           source: nonExistentPath,
           destination: 'assets'
         } ) )
-        .build( function( err ) {
+        .build( ( err ) => {
           try {
             assert( err, 'Expected an error but got none' );
             assert.strictEqual( typeof err, 'string', 'Error should be a string' );
@@ -350,13 +350,13 @@ describe( 'metalsmith-static-files', function() {
         } );
     } );
 
-    it( 'should handle invalid source path with descriptive error', function( done ) {
+    it( 'should handle invalid source path with descriptive error', ( done ) => {
       metalsmith
         .use( plugin( {
           source: '../outside-project',
           destination: 'assets'
         } ) )
-        .build( function( err ) {
+        .build( ( err ) => {
           try {
             assert( err, 'Expected an error but got none' );
             assert.strictEqual( typeof err, 'string', 'Error should be a string' );
@@ -368,7 +368,7 @@ describe( 'metalsmith-static-files', function() {
         } );
     } );
 
-    it( 'should handle unexpected errors gracefully', function( done ) {
+    it( 'should handle unexpected errors gracefully', ( done ) => {
       // Mock fs.copy to throw an error
       const originalCopy = fs.copy;
       fs.copy = () => Promise.reject(new Error('Unexpected test error'));
@@ -378,7 +378,7 @@ describe( 'metalsmith-static-files', function() {
           source: 'src',
           destination: 'assets'
         } ) )
-        .build( function( err ) {
+        .build( ( err ) => {
           try {
             assert( err, 'Expected an error but got none' );
             assert.strictEqual( typeof err, 'string', 'Error should be a string' );
@@ -397,7 +397,7 @@ describe( 'metalsmith-static-files', function() {
         } );
     } );
 
-    it( 'should handle missing destination parameter gracefully', function( done ) {
+    it( 'should handle missing destination parameter gracefully', ( done ) => {
       metalsmith
         .use( plugin( {
           source: 'assets'

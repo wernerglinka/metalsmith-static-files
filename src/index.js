@@ -62,8 +62,8 @@ function plugin(options) {
   // Return early if required options are missing
   if (!options.source || !options.destination) {
     const missingOptions = [];
-    if (!options.source) missingOptions.push('source');
-    if (!options.destination) missingOptions.push('destination');
+    if (!options.source) {missingOptions.push('source');}
+    if (!options.destination) {missingOptions.push('destination');}
 
     const message = `Skipping metalsmith-static-files: Missing required options: ${missingOptions.join(', ')}`;
     console.warn(message);
@@ -101,7 +101,7 @@ function plugin(options) {
         filter: options.filter ? 
           (src) => {
             // If it's a directory, always include it
-            if (fs.statSync(src).isDirectory()) return true;
+            if (fs.statSync(src).isDirectory()) {return true;}
             
             // Otherwise, apply the filter patterns
             return options.filter.some(pattern => 
