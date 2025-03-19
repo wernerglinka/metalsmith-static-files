@@ -1,7 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import assert from 'assert';
-import equals from 'assert-dir-equal';
+import assert from 'node:assert';
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import Metalsmith from 'metalsmith';
 import plugin from '../lib/index.js';
@@ -12,6 +11,46 @@ const { name } = JSON.parse( fs.readFileSync( './package.json' ) );
 
 const fixture = ( p ) => {
   return path.resolve( dirname( fileURLToPath( import.meta.url ) ), 'fixtures', p );
+};
+
+/**
+ * Compare two directories recursively
+ * @param {string} actualDir - Path to actual directory
+ * @param {string} expectedDir - Path to expected directory
+ */
+const compareDirectories = (actualDir, expectedDir) => {
+  // Get list of files in both directories
+  const actualFiles = fs.readdirSync(actualDir).sort();
+  const expectedFiles = fs.readdirSync(expectedDir).sort();
+  
+  // Compare file lists
+  assert.deepStrictEqual(actualFiles, expectedFiles, 'Directory contents should match');
+  
+  // Compare each file/directory
+  for (const file of actualFiles) {
+    const actualPath = path.join(actualDir, file);
+    const expectedPath = path.join(expectedDir, file);
+    
+    const actualStat = fs.statSync(actualPath);
+    const expectedStat = fs.statSync(expectedPath);
+    
+    // Check if both are directories or both are files
+    assert.strictEqual(
+      actualStat.isDirectory(),
+      expectedStat.isDirectory(),
+      `${file} should be the same type in both directories`
+    );
+    
+    if (actualStat.isDirectory()) {
+      // Recursively compare subdirectories
+      compareDirectories(actualPath, expectedPath);
+    } else {
+      // Compare file contents
+      const actualContent = fs.readFileSync(actualPath, 'utf8');
+      const expectedContent = fs.readFileSync(expectedPath, 'utf8');
+      assert.strictEqual(actualContent, expectedContent, `Content of ${file} should match`);
+    }
+  }
 };
 
 describe( 'metalsmith-static-files', function() {
@@ -59,7 +98,7 @@ describe( 'metalsmith-static-files', function() {
       .use( plugin() )
       .build( ( err ) => {
         assert.strictEqual( err, null );
-        equals( fixture( 'default/build' ), fixture( 'default/expected' ) );
+        compareDirectories( fixture( 'default/build' ), fixture( 'default/expected' ) );
         done();
       } );
   } );
@@ -73,7 +112,7 @@ describe( 'metalsmith-static-files', function() {
       } ) )
       .build( ( err ) => {
         assert.strictEqual( err, null );
-        equals( fixture( 'copy-directory/build' ), fixture( 'copy-directory/expected' ) );
+        compareDirectories( fixture( 'copy-directory/build' ), fixture( 'copy-directory/expected' ) );
         done();
       } );
   } );
@@ -140,7 +179,7 @@ describe( 'metalsmith-static-files', function() {
               'Console should warn about missing destination'
             );
             // Build should complete but no files should be copied
-            equals( fixture( 'default/build' ), fixture( 'default/expected' ) );
+            compareDirectories( fixture( 'default/build' ), fixture( 'default/expected' ) );
             done();
           } catch ( e ) {
             done( e );
