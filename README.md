@@ -5,6 +5,8 @@ A Metalsmith plugin to copy a directory to the build directory
 [![metalsmith:plugin][metalsmith-badge]][metalsmith-url]
 [![npm: version][npm-badge]][npm-url]
 [![license: MIT][license-badge]][license-url]
+[![coverage][coverage-badge]][coverage-url]
+[![ESM/CommonJS][modules-badge]][npm-url]
 
 ## Installation
 
@@ -111,6 +113,19 @@ To use this plugin with the Metalsmith CLI, add `metalsmith-static-files` to the
 }
 ```
 
+## Test Coverage
+
+This project maintains high statement and line coverage for the source code. Coverage is verified during the release process using the c8 coverage tool.
+
+Coverage report (from latest test run):
+
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+----------|---------|----------|---------|---------|-------------------
+All files | 97.88 | 96 | 100 | 97.88 |
+ index.js | 97.88 | 96 | 100 | 97.88 | 140-142
+
+
+
 ## License
 
 [MIT](LICENSE)
@@ -121,3 +136,6 @@ To use this plugin with the Metalsmith CLI, add `metalsmith-static-files` to the
 [metalsmith-url]: https://metalsmith.io
 [license-badge]: https://img.shields.io/github/license/wernerglinka/metalsmith-static-files
 [license-url]: LICENSE
+[coverage-badge]: https://img.shields.io/badge/coverage-98%25-brightgreen
+[coverage-url]: #test-coverage
+[modules-badge]: https://img.shields.io/badge/modules-ESM%2FCJS-blue

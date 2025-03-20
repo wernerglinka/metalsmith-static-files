@@ -134,3 +134,9 @@ export { normalizeOptions };
 
 // ESM export 
 export default plugin;
+
+// CommonJS export compatibility
+if (typeof module !== 'undefined') {
+  module.exports = plugin;
+  module.exports.normalizeOptions = normalizeOptions;
+}

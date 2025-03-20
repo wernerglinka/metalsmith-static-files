@@ -3,7 +3,7 @@ import { dirname } from 'node:path';
 import assert from 'node:assert';
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import Metalsmith from 'metalsmith';
-import plugin, { normalizeOptions } from '../lib/index.js';
+import plugin, { normalizeOptions } from '../src/index.js';
 import path from 'path';
 import fs from 'fs-extra';
 
