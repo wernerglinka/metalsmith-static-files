@@ -136,6 +136,6 @@ All files | 97.88 | 96 | 100 | 97.88 |
 [metalsmith-url]: https://metalsmith.io
 [license-badge]: https://img.shields.io/github/license/wernerglinka/metalsmith-static-files
 [license-url]: LICENSE
-[coverage-badge]: https://img.shields.io/badge/coverage-98%25-brightgreen
-[coverage-url]: #test-coverage
+[coverage-badge]: https://img.shields.io/badge/coverage-98%25-brightgreen.svg
+[coverage-url]: https://github.com/wernerglinka/metalsmith-optimize-html/blob/master/README.md
 [modules-badge]: https://img.shields.io/badge/modules-ESM%2FCJS-blue
