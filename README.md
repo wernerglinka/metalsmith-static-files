@@ -10,21 +10,15 @@ A Metalsmith plugin to copy a directory to the build directory
 
 ## Installation
 
-NPM:
-
 ```
 npm install metalsmith-static-files
-```
-
-Yarn:
-
-```
-yarn add metalsmith-static-files
 ```
 
 ## Usage
 
 Pass `metalsmith-static-files` to `metalsmith.use`. The `source` directory path is resolved to `metalsmith.directory()`. The `destination` path is resolved to `metalsmith.destination()`.
+
+Typically, you want to use this plugin somewhere at the start of the chain, before any asset plugins are run, like @metalsmith/sass.
 
 ### ESM (ES Modules)
 
@@ -74,29 +68,18 @@ metalsmith.use(staticFiles({
 }));
 ```
 
-## Plugin order
-Typically, you want to use this plugin somewhere at the start of the chain, before any asset plugins are run, like @metalsmith/sass.
+## Debug
 
-### Debug
+To enable debug logs, set the `DEBUG` environment variable to `metalsmith-static-files`:
 
-This plugin supports Metalsmith's built-in debugging capabilities. To enable debug logs, use the debug option in Metalsmith:
+Linux/Mac:
+```
+DEBUG=metalsmith-static-files
+```
 
-```js
-// To debug just this plugin
-const metalsmith = Metalsmith(__dirname)
-  .debug(['metalsmith-static-files'])
-  .use(staticFiles({
-    source: 'assets',
-    destination: 'assets'
-  }));
-
-// Or to debug all plugins
-const metalsmith = Metalsmith(__dirname)
-  .debug(true)
-  .use(staticFiles({
-    source: 'assets',
-    destination: 'assets'
-  }));
+Windows:
+```
+set DEBUG=metalsmith-static-files
 ```
 
 ### CLI usage
@@ -125,6 +108,9 @@ All files | 97.88 | 96 | 100 | 97.88 |
  index.js | 97.88 | 96 | 100 | 97.88 | 140-142
 
 
+## Author
+
+[werner@glinka.co](https://github.com/wernerglinka)
 
 ## License
 
