@@ -100,14 +100,6 @@ To use this plugin with the Metalsmith CLI, add `metalsmith-static-files` to the
 
 This project maintains high statement and line coverage for the source code. Coverage is verified during the release process using the c8 coverage tool.
 
-Coverage report (from latest test run):
-
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-----------|---------|----------|---------|---------|-------------------
-All files | 97.88 | 96 | 100 | 97.88 |
- index.js | 97.88 | 96 | 100 | 97.88 | 140-142
-
-
 ## Author
 
 [werner@glinka.co](https://github.com/wernerglinka)
@@ -122,6 +114,6 @@ All files | 97.88 | 96 | 100 | 97.88 |
 [metalsmith-url]: https://metalsmith.io
 [license-badge]: https://img.shields.io/github/license/wernerglinka/metalsmith-static-files
 [license-url]: LICENSE
-[coverage-badge]: https://img.shields.io/badge/coverage-98%25-brightgreen.svg
+[coverage-badge]: https://img.shields.io/badge/test%20coverage-98%25-brightgreen.svg
 [coverage-url]: https://github.com/wernerglinka/metalsmith-optimize-html/blob/master/README.md
 [modules-badge]: https://img.shields.io/badge/modules-ESM%2FCJS-blue
