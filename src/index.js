@@ -18,17 +18,21 @@ const debugNs = 'metalsmith-static-files';
  * @type {Options}
  */
 const defaults = {
+  source: 'src/assets',
+  destination: 'assets',
   overwrite: true,
   preserveTimestamps: false
 };
 
 /**
- * Normalize plugin options
+ * Normalize plugin options by merging with defaults
+ *
+ * @private This function is primarily for internal use and testing
  * @param {Options} [options] - User provided options
  * @returns {Options} - Normalized options with defaults applied
  */
-function normalizeOptions(options) {
-  return { ...defaults, ...(options || {}) };
+function normalizeOptions( options ) {
+  return { ...defaults, ...( options || {} ) };
 }
 
 /**
@@ -44,7 +48,7 @@ function normalizeOptions(options) {
  *   source: 'assets',
  *   destination: 'assets'
  * }));
- * 
+ *
  * @example
  * // With additional options
  * metalsmith.use(staticFiles({
@@ -55,88 +59,81 @@ function normalizeOptions(options) {
  *   filter: ['**\/*.{jpg,png}', '!**\/*.svg']
  * }));
  */
-function plugin(options) {
+function plugin( options ) {
   // Normalize options with defaults
-  options = normalizeOptions(options);
-
-  // Return early if required options are missing
-  if (!options.source || !options.destination) {
-    const missingOptions = [];
-    if (!options.source) {missingOptions.push('source');}
-    if (!options.destination) {missingOptions.push('destination');}
-
-    const message = `Skipping metalsmith-static-files: Missing required options: ${missingOptions.join(', ')}`;
-    console.warn(message);
-
-    return function metalsmithStaticFiles(files, metalsmith, done) {
-      done();
-    };
-  }
+  options = normalizeOptions( options );
 
   // Return the plugin function
-  return function metalsmithStaticFiles(files, metalsmith, done) {
+  // Note: 'files' parameter is required by Metalsmith plugin API but not used by this plugin
+  return function metalsmithStaticFiles( files, metalsmith, done ) {
     try {
-      const debug = metalsmith.debug ? metalsmith.debug(debugNs) : () => {};
-      
-      debug('Running with options: %o', options);
-      
+      const debug = metalsmith.debug ? metalsmith.debug( debugNs ) : () => { };
+
+      debug( 'Running with options: %o', options );
+
       // Resolve source and destination paths
-      const source = metalsmith.path(options.source);
-      const destination = metalsmith.path(metalsmith.destination(), options.destination);
-      
-      debug('Source directory: %s', source);
-      debug('Destination directory: %s', destination);
+      const source = metalsmith.path( options.source );
+      const destination = metalsmith.path( metalsmith.destination(), options.destination );
+
+      debug( 'Source directory: %s', source );
+      debug( 'Destination directory: %s', destination );
 
       // Ensure source directory exists
-      if (!fs.existsSync(source)) {
-        const errorMessage = `An error occurred while copying the directory: Source directory does not exist: ${source}`;
-        console.error(errorMessage);
-        return done(errorMessage);
+      if ( !fs.existsSync( source ) ) {
+        const errorMessage = `An error occurred while copying the directory: Source directory does not exist: ${ source }`;
+        console.error( errorMessage );
+        return done( errorMessage );
       }
 
       // Create copy options
       const copyOptions = {
         overwrite: options.overwrite,
         preserveTimestamps: options.preserveTimestamps,
-        filter: options.filter ? 
-          (src) => {
+        filter: options.filter ?
+          ( src ) => {
             // If it's a directory, always include it
-            if (fs.statSync(src).isDirectory()) {return true;}
-            
+            if ( fs.statSync( src ).isDirectory() ) { return true; }
+
             // Otherwise, apply the filter patterns
-            return options.filter.some(pattern => 
-              new RegExp(pattern.replace(/\*/g, '.*')).test(src));
-          } : 
+            return options.filter.some( pattern =>
+              new RegExp( pattern.replace( /\*/g, '.*' ) ).test( src ) );
+          } :
           undefined
       };
 
       // Copy the directory
-      fs.copy(source, destination, copyOptions)
-        .then(() => {
-          debug('Successfully copied files from %s to %s', source, destination);
+      fs.copy( source, destination, copyOptions )
+        .then( () => {
+          debug( 'Successfully copied files from %s to %s', source, destination );
           done();
-        })
-        .catch((err) => {
-          const errorMessage = `An error occurred while copying the directory: ${err.message}`;
-          console.error(errorMessage);
-          done(errorMessage);
-        });
-    } catch (err) {
-      const errorMessage = `Unexpected error in metalsmith-static-files: ${err.message}`;
-      console.error(errorMessage);
-      done(errorMessage);
+        } )
+        .catch( ( err ) => {
+          const errorMessage = `An error occurred while copying the directory: ${ err.message }`;
+          console.error( errorMessage );
+          done( errorMessage );
+        } );
+    } catch ( err ) {
+      const errorMessage = `Unexpected error in metalsmith-static-files: ${ err.message }`;
+      console.error( errorMessage );
+      done( errorMessage );
     }
   };
 }
 
-// Export normalizeOptions for testing
-export { normalizeOptions };
+/**
+ * Export the plugin as the default export.
+ *
+ * Note on exports:
+ * - The main plugin function is exported as the default export
+ * - The normalizeOptions function is attached to the default export
+ *   but is primarily intended for testing purposes, not public API usage
+ */
+const metalsmithStaticFiles = plugin;
 
-// ESM export 
-export default plugin;
+// Attach normalizeOptions to the plugin for testing purposes
+// This avoids having mixed named and default exports while still
+// making the function available for tests
+metalsmithStaticFiles.normalizeOptions = normalizeOptions;
 
-// CommonJS export compatibility
-if (typeof module !== 'undefined') {
-  module.exports = plugin;
-  module.exports.normalizeOptions = normalizeOptions;
-}
+export default metalsmithStaticFiles;
+

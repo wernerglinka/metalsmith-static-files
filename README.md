@@ -46,13 +46,13 @@ metalsmith.use(staticFiles({
 
 The plugin accepts the following options:
 
-| Option               | Type      | Default | Description                                               |
-|----------------------|-----------|---------|-----------------------------------------------------------|
-| `source`             | `string`  | -       | Source directory path relative to Metalsmith root (required) |
-| `destination`        | `string`  | -       | Destination directory path relative to build directory (required) |
-| `overwrite`          | `boolean` | `true`  | Whether to overwrite existing files                       |
-| `preserveTimestamps` | `boolean` | `false` | Whether to preserve timestamps when copying files         |
-| `filter`             | `array`   | -       | Array of glob patterns to include/exclude files (optional) |
+| Option               | Type      | Default       | Description                                               |
+|----------------------|-----------|---------------|-----------------------------------------------------------|
+| `source`             | `string`  | `src/assets`  | Source directory path relative to Metalsmith root         |
+| `destination`        | `string`  | `assets`      | Destination directory path relative to build directory    |
+| `overwrite`          | `boolean` | `true`        | Whether to overwrite existing files                       |
+| `preserveTimestamps` | `boolean` | `false`       | Whether to preserve timestamps when copying files         |
+| `filter`             | `array`   | -             | Array of glob patterns to include/exclude files (optional) |
 
 ### Advanced Usage
 
