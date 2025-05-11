@@ -23,49 +23,55 @@ Typically, you want to use this plugin somewhere at the start of the chain, befo
 ### ESM (ES Modules)
 
 ```js
-import staticFiles from 'metalsmith-static-files';
+import staticFiles from 'metalsmith-static-files'
 
-metalsmith.use(staticFiles({
-  source: 'src/assets/',
-  destination: 'assets/',
-}));
+metalsmith.use(
+  staticFiles({
+    source: 'src/assets/',
+    destination: 'assets/'
+  })
+)
 ```
 
 ### CommonJS
 
 ```js
-const staticFiles = require('metalsmith-static-files');
+const staticFiles = require('metalsmith-static-files')
 
-metalsmith.use(staticFiles({
-  source: 'src/assets/',
-  destination: 'assets/',
-}))
+metalsmith.use(
+  staticFiles({
+    source: 'src/assets/',
+    destination: 'assets/'
+  })
+)
 ```
 
 ## Options
 
 The plugin accepts the following options:
 
-| Option               | Type      | Default       | Description                                               |
-|----------------------|-----------|---------------|-----------------------------------------------------------|
-| `source`             | `string`  | `src/assets`  | Source directory path relative to Metalsmith root         |
-| `destination`        | `string`  | `assets`      | Destination directory path relative to build directory    |
-| `overwrite`          | `boolean` | `true`        | Whether to overwrite existing files                       |
-| `preserveTimestamps` | `boolean` | `false`       | Whether to preserve timestamps when copying files         |
-| `filter`             | `array`   | -             | Array of glob patterns to include/exclude files (optional) |
+| Option               | Type      | Default      | Description                                                |
+| -------------------- | --------- | ------------ | ---------------------------------------------------------- |
+| `source`             | `string`  | `src/assets` | Source directory path relative to Metalsmith root          |
+| `destination`        | `string`  | `assets`     | Destination directory path relative to build directory     |
+| `overwrite`          | `boolean` | `true`       | Whether to overwrite existing files                        |
+| `preserveTimestamps` | `boolean` | `false`      | Whether to preserve timestamps when copying files          |
+| `filter`             | `array`   | -            | Array of glob patterns to include/exclude files (optional) |
 
 ### Advanced Usage
 
 Here's an example with advanced options:
 
 ```js
-metalsmith.use(staticFiles({
-  source: 'static',
-  destination: 'public',
-  overwrite: false,            // Don't overwrite existing files
-  preserveTimestamps: true,    // Keep original timestamps
-  filter: ['**/*.{jpg,png}', '!**/*.svg'] // Only include jpg/png files, exclude svg
-}));
+metalsmith.use(
+  staticFiles({
+    source: 'static',
+    destination: 'public',
+    overwrite: false, // Don't overwrite existing files
+    preserveTimestamps: true, // Keep original timestamps
+    filter: ['**/*.{jpg,png}', '!**/*.svg'] // Only include jpg/png files, exclude svg
+  })
+)
 ```
 
 ## Debug
@@ -73,11 +79,13 @@ metalsmith.use(staticFiles({
 To enable debug logs, set the `DEBUG` environment variable to `metalsmith-static-files`:
 
 Linux/Mac:
+
 ```
 DEBUG=metalsmith-static-files
 ```
 
 Windows:
+
 ```
 set DEBUG=metalsmith-static-files
 ```

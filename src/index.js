@@ -1,8 +1,8 @@
 // Import declarations at the top with a consistent order
-import fs from 'fs-extra';
+import fs from 'fs-extra'
 
 // Plugin namespace for debugging
-const debugNs = 'metalsmith-static-files';
+const debugNs = 'metalsmith-static-files'
 
 /**
  * @typedef {Object} Options
@@ -22,7 +22,7 @@ const defaults = {
   destination: 'assets',
   overwrite: true,
   preserveTimestamps: false
-};
+}
 
 /**
  * Normalize plugin options by merging with defaults
@@ -31,8 +31,8 @@ const defaults = {
  * @param {Options} [options] - User provided options
  * @returns {Options} - Normalized options with defaults applied
  */
-function normalizeOptions( options ) {
-  return { ...defaults, ...( options || {} ) };
+function normalizeOptions(options) {
+  return { ...defaults, ...(options || {}) }
 }
 
 /**
@@ -59,65 +59,66 @@ function normalizeOptions( options ) {
  *   filter: ['**\/*.{jpg,png}', '!**\/*.svg']
  * }));
  */
-function plugin( options ) {
+function plugin(options) {
   // Normalize options with defaults
-  options = normalizeOptions( options );
+  options = normalizeOptions(options)
 
   // Return the plugin function
   // Note: 'files' parameter is required by Metalsmith plugin API but not used by this plugin
-  return function metalsmithStaticFiles( files, metalsmith, done ) {
+  return function metalsmithStaticFiles(files, metalsmith, done) {
     try {
-      const debug = metalsmith.debug ? metalsmith.debug( debugNs ) : () => { };
+      const debug = metalsmith.debug ? metalsmith.debug(debugNs) : () => {}
 
-      debug( 'Running with options: %o', options );
+      debug('Running with options: %o', options)
 
       // Resolve source and destination paths
-      const source = metalsmith.path( options.source );
-      const destination = metalsmith.path( metalsmith.destination(), options.destination );
+      const source = metalsmith.path(options.source)
+      const destination = metalsmith.path(metalsmith.destination(), options.destination)
 
-      debug( 'Source directory: %s', source );
-      debug( 'Destination directory: %s', destination );
+      debug('Source directory: %s', source)
+      debug('Destination directory: %s', destination)
 
       // Ensure source directory exists
-      if ( !fs.existsSync( source ) ) {
-        const errorMessage = `An error occurred while copying the directory: Source directory does not exist: ${ source }`;
-        console.error( errorMessage );
-        return done( errorMessage );
+      if (!fs.existsSync(source)) {
+        const errorMessage = `An error occurred while copying the directory: Source directory does not exist: ${source}`
+        console.error(errorMessage)
+        return done(errorMessage)
       }
 
       // Create copy options
       const copyOptions = {
         overwrite: options.overwrite,
         preserveTimestamps: options.preserveTimestamps,
-        filter: options.filter ?
-          ( src ) => {
-            // If it's a directory, always include it
-            if ( fs.statSync( src ).isDirectory() ) { return true; }
+        filter: options.filter
+          ? (src) => {
+              // If it's a directory, always include it
+              if (fs.statSync(src).isDirectory()) {
+                return true
+              }
 
-            // Otherwise, apply the filter patterns
-            return options.filter.some( pattern =>
-              new RegExp( pattern.replace( /\*/g, '.*' ) ).test( src ) );
-          } :
-          undefined
-      };
+              // Otherwise, apply the filter patterns
+              return options.filter.some((pattern) => new RegExp(pattern.replace(/\*/g, '.*')).test(src))
+            }
+          : undefined
+      }
 
       // Copy the directory
-      fs.copy( source, destination, copyOptions )
-        .then( () => {
-          debug( 'Successfully copied files from %s to %s', source, destination );
-          done();
-        } )
-        .catch( ( err ) => {
-          const errorMessage = `An error occurred while copying the directory: ${ err.message }`;
-          console.error( errorMessage );
-          done( errorMessage );
-        } );
-    } catch ( err ) {
-      const errorMessage = `Unexpected error in metalsmith-static-files: ${ err.message }`;
-      console.error( errorMessage );
-      done( errorMessage );
+      fs.copy(source, destination, copyOptions)
+        .then(() => {
+          debug('Successfully copied files from %s to %s', source, destination)
+          done()
+        })
+        .catch((err) => {
+          const errorMessage = `An error occurred while copying the directory: ${err.message}`
+          console.error(errorMessage)
+          done(errorMessage)
+        })
+    } catch (err) {
+      const errorMessage = `Unexpected error in metalsmith-static-files: ${err.message}`
+      console.error(errorMessage)
+      done(errorMessage)
     }
-  };
+  }
 }
 
 /**
@@ -128,12 +129,11 @@ function plugin( options ) {
  * - The normalizeOptions function is attached to the default export
  *   but is primarily intended for testing purposes, not public API usage
  */
-const metalsmithStaticFiles = plugin;
+const metalsmithStaticFiles = plugin
 
 // Attach normalizeOptions to the plugin for testing purposes
 // This avoids having mixed named and default exports while still
 // making the function available for tests
-metalsmithStaticFiles.normalizeOptions = normalizeOptions;
+metalsmithStaticFiles.normalizeOptions = normalizeOptions
 
-export default metalsmithStaticFiles;
-
+export default metalsmithStaticFiles

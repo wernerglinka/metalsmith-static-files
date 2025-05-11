@@ -6,4 +6,4 @@ export default {
   bracketSpacing: true,
   arrowParens: 'always',
   printWidth: 120
-};
+}
