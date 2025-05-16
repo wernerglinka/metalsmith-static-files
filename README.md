@@ -78,16 +78,8 @@ metalsmith.use(
 
 To enable debug logs, set the `DEBUG` environment variable to `metalsmith-static-files`:
 
-Linux/Mac:
-
 ```
 DEBUG=metalsmith-static-files
-```
-
-Windows:
-
-```
-set DEBUG=metalsmith-static-files
 ```
 
 ### CLI usage
@@ -104,10 +96,6 @@ To use this plugin with the Metalsmith CLI, add `metalsmith-static-files` to the
 }
 ```
 
-## Test Coverage
-
-This project maintains high statement and line coverage for the source code. Coverage is verified during the release process using the c8 coverage tool.
-
 ## Author
 
 [werner@glinka.co](https://github.com/wernerglinka)
@@ -122,6 +110,6 @@ This project maintains high statement and line coverage for the source code. Cov
 [metalsmith-url]: https://metalsmith.io
 [license-badge]: https://img.shields.io/github/license/wernerglinka/metalsmith-static-files
 [license-url]: LICENSE
-[coverage-badge]: https://img.shields.io/badge/test%20coverage-100%25-brightgreen.svg
-[coverage-url]: https://github.com/wernerglinka/metalsmith-optimize-html/blob/master/README.md
+[coverage-badge]: https://img.shields.io/badge/test%20coverage-100%25-brightgreen
+[coverage-url]: https://github.com/wernerglinka/metalsmith-static-files/actions/workflows/test.yml
 [modules-badge]: https://img.shields.io/badge/modules-ESM%2FCJS-blue
