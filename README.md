@@ -7,6 +7,12 @@ A Metalsmith plugin to copy a directory to the build directory
 [![license: MIT][license-badge]][license-url]
 [![coverage][coverage-badge]][coverage-url]
 [![ESM/CommonJS][modules-badge]][npm-url]
+[![Known Vulnerabilities](https://snyk.io/test/github/wernerglinka/metalsmith-static-files/badge.svg)](https://snyk.io/test/github/wernerglinka/metalsmith-static-files/badge)
+
+## Features
+- This plugin supports both ESM and CommonJS environments with no configuration needed:
+  - ESM: `import staticFiles from 'metalsmith-static-files'`
+  - CommonJS: `const staticFiles = require('metalsmith-static-files')`
 
 ## Installation
 
@@ -20,24 +26,7 @@ Pass `metalsmith-static-files` to `metalsmith.use`. The `source` directory path 
 
 Typically, you want to use this plugin somewhere at the start of the chain, before any asset plugins are run, like @metalsmith/sass.
 
-### ESM (ES Modules)
-
 ```js
-import staticFiles from 'metalsmith-static-files'
-
-metalsmith.use(
-  staticFiles({
-    source: 'src/assets/',
-    destination: 'assets/'
-  })
-)
-```
-
-### CommonJS
-
-```js
-const staticFiles = require('metalsmith-static-files')
-
 metalsmith.use(
   staticFiles({
     source: 'src/assets/',
