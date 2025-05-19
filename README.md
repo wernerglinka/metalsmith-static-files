@@ -7,7 +7,7 @@ A Metalsmith plugin to copy a directory to the build directory
 [![license: MIT][license-badge]][license-url]
 [![coverage][coverage-badge]][coverage-url]
 [![ESM/CommonJS][modules-badge]][npm-url]
-[![Known Vulnerabilities](https://snyk.io/test/github/wernerglinka/metalsmith-static-files/badge.svg)](https://snyk.io/test/github/wernerglinka/metalsmith-static-files/badge)
+[![Known Vulnerabilities](https://snyk.io/test/npm/wernerglinka/metalsmith-static-files/badge.svg)](https://snyk.io/test/npm/metalsmith-static-files)
 
 ## Features
 - This plugin supports both ESM and CommonJS environments with no configuration needed:
