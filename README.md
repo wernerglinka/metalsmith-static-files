@@ -10,6 +10,7 @@ A Metalsmith plugin to copy a directory to the build directory
 [![Known Vulnerabilities](https://snyk.io/test/npm/wernerglinka/metalsmith-static-files/badge.svg)](https://snyk.io/test/npm/metalsmith-static-files)
 
 ## Features
+
 - This plugin supports both ESM and CommonJS environments with no configuration needed:
   - ESM: `import staticFiles from 'metalsmith-static-files'`
   - CommonJS: `const staticFiles = require('metalsmith-static-files')`
@@ -46,6 +47,47 @@ The plugin accepts the following options:
 | `overwrite`          | `boolean` | `true`       | Whether to overwrite existing files                        |
 | `preserveTimestamps` | `boolean` | `false`      | Whether to preserve timestamps when copying files          |
 | `filter`             | `array`   | -            | Array of glob patterns to include/exclude files (optional) |
+
+## Examples
+
+### Basic Usage
+
+```js
+import Metalsmith from 'metalsmith'
+import staticFiles from 'metalsmith-static-files'
+
+Metalsmith(__dirname)
+  .source('./src')
+  .destination('./build')
+  .use(staticFiles())
+  .build((err) => {
+    if (err) throw err
+    console.log('Build complete!')
+  })
+```
+
+### With Options
+
+```js
+import Metalsmith from 'metalsmith'
+import staticFiles from 'metalsmith-static-files'
+
+Metalsmith(__dirname)
+  .source('./src')
+  .destination('./build')
+  .use(
+    staticFiles({
+      source: 'static',
+      destination: 'public',
+      overwrite: false,
+      preserveTimestamps: true,
+      filter: ['**/*.{jpg,png}', '!**/*.svg']
+    })
+  )
+  .build((err) => {
+    if (err) throw err
+  })
+```
 
 ### Advanced Usage
 

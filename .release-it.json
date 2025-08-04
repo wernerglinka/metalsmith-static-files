@@ -19,7 +19,7 @@
     "release": true,
     "repo": "wernerglinka/metalsmith-static-files",
     "releaseName": "metalsmith-static-files ${version}",
-    "tokenRef": "GITHUB_TOKEN",
+    "tokenRef": "GH_TOKEN",
     "assets": ["metalsmith-static-files-${version}.tgz"]
   }
 }
