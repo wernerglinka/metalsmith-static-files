@@ -4,7 +4,7 @@ import assert from 'node:assert'
 import { describe, it, beforeEach, afterEach } from 'mocha'
 import Metalsmith from 'metalsmith'
 import plugin from '../src/index.js'
-const { normalizeOptions } = plugin
+const { normalizeOptions, globToRegex, matchesAnyPattern } = plugin
 import path from 'path'
 import fs from 'fs-extra'
 
@@ -276,10 +276,11 @@ describe('metalsmith-static-files', () => {
       )
     })
 
-    it('should filter files based on patterns', (done) => {
+    it('should ignore files based on ignore patterns', (done) => {
       const assetDir = fixture('copy-directory/assets')
-      // Create a second file with different extension for testing filter
+      // Create test files
       fs.writeFileSync(path.join(assetDir, 'test.txt'), 'test content')
+      fs.writeFileSync(path.join(assetDir, 'ignore-me.tmp'), 'temp content')
 
       metalsmith = Metalsmith(fixture('copy-directory'))
       metalsmith
@@ -287,61 +288,133 @@ describe('metalsmith-static-files', () => {
           plugin({
             source: 'assets',
             destination: 'assets',
-            filter: ['*.js'] // Only copy .js files
+            ignore: ['*.tmp', 'test.txt'] // Ignore temp files and test.txt
           })
         )
         .build((err) => {
           assert.strictEqual(err, null)
           // JS file should exist
           assert(fs.existsSync(fixture('copy-directory/build/assets/asset-file.js')))
-          // TXT file should not exist
+          // Ignored files should not exist
           assert(!fs.existsSync(fixture('copy-directory/build/assets/test.txt')))
+          assert(!fs.existsSync(fixture('copy-directory/build/assets/ignore-me.tmp')))
 
-          // Clean up the test file
+          // Clean up test files
           fs.removeSync(path.join(assetDir, 'test.txt'))
+          fs.removeSync(path.join(assetDir, 'ignore-me.tmp'))
           done()
         })
     })
 
-    it('should implement filter logic correctly', () => {
-      // Directly test the filter logic without mocking the filesystem
-      const options = { filter: ['*.js', '!*test*'] }
-      const isDirectory = true
-      const isFile = false
+    it('should implement improved glob pattern matching', () => {
+      // Test globToRegex function
+      assert.strictEqual(globToRegex('*.js').test('file.js'), true, 'Should match .js files')
+      assert.strictEqual(globToRegex('*.js').test('file.css'), false, 'Should not match .css files')
+      assert.strictEqual(globToRegex('test.?').test('test.a'), true, 'Should match single character wildcard')
+      assert.strictEqual(
+        globToRegex('test.?').test('test.ab'),
+        false,
+        'Should not match multiple characters with single wildcard'
+      )
 
-      // Create a simple stat-like function that can return directory or file
-      const mockStat = (isDir) => ({ isDirectory: () => isDir })
+      // Test matchesAnyPattern function
+      assert.strictEqual(
+        matchesAnyPattern('file.js', ['*.js', '*.css']),
+        true,
+        'Should match against multiple patterns'
+      )
+      assert.strictEqual(
+        matchesAnyPattern('file.txt', ['*.js', '*.css']),
+        false,
+        'Should not match if no patterns match'
+      )
+      assert.strictEqual(matchesAnyPattern('file.js', []), false, 'Should return false for empty patterns array')
+      assert.strictEqual(matchesAnyPattern('file.js', null), false, 'Should handle null patterns')
+    })
 
-      // Save original statSync
-      const originalStatSync = fs.statSync
+    it('should handle directory patterns correctly', () => {
+      // Test directory patterns
+      assert.strictEqual(matchesAnyPattern('styles', ['styles/']), true, 'Should match directory with trailing slash')
+      assert.strictEqual(
+        matchesAnyPattern('styles/main.css', ['styles/']),
+        true,
+        'Should match files in directory with trailing slash'
+      )
+      assert.strictEqual(
+        matchesAnyPattern('styles/nested/file.js', ['styles/']),
+        true,
+        'Should match nested files in directory with trailing slash'
+      )
 
-      // Test directory case - should always return true
-      fs.statSync = () => mockStat(isDirectory)
-      const filterFunc = (src) => {
-        if (fs.statSync(src).isDirectory()) {
-          return true
-        }
-        return options.filter.some((pattern) => new RegExp(pattern.replace(/\*/g, '.*')).test(src))
-      }
+      // Test recursive directory patterns
+      assert.strictEqual(
+        matchesAnyPattern('styles', ['styles/**']),
+        true,
+        'Should match directory with recursive pattern'
+      )
+      assert.strictEqual(
+        matchesAnyPattern('styles/main.css', ['styles/**']),
+        true,
+        'Should match files in directory with recursive pattern'
+      )
+      assert.strictEqual(
+        matchesAnyPattern('styles/nested/file.js', ['styles/**']),
+        true,
+        'Should match nested files with recursive pattern'
+      )
 
-      // Directory should always be included
-      assert.strictEqual(filterFunc('any/directory/path'), true, 'Directories should always be included')
+      // Test file patterns in directories
+      assert.strictEqual(
+        matchesAnyPattern('styles/main.css', ['styles/*']),
+        true,
+        'Should match files with wildcard pattern'
+      )
+      assert.strictEqual(
+        matchesAnyPattern('styles/nested/file.js', ['styles/*']),
+        false,
+        'Should not match nested files with single wildcard'
+      )
+    })
 
-      // Test file cases
-      fs.statSync = () => mockStat(isFile)
+    it('should exclude entire directories with various patterns', (done) => {
+      const assetDir = fixture('copy-directory/assets')
 
-      // Should match *.js pattern
-      assert.strictEqual(filterFunc('file.js'), true, 'Should match .js files')
+      // Create a directory structure to test
+      const stylesDir = path.join(assetDir, 'styles')
+      fs.ensureDirSync(stylesDir)
+      fs.writeFileSync(path.join(stylesDir, 'main.css'), 'css content')
+      fs.writeFileSync(path.join(stylesDir, 'theme.css'), 'theme content')
 
-      // Should not match .css files
-      assert.strictEqual(filterFunc('file.css'), false, 'Should not match .css files')
+      const nestedDir = path.join(stylesDir, 'nested')
+      fs.ensureDirSync(nestedDir)
+      fs.writeFileSync(path.join(nestedDir, 'nested.css'), 'nested css')
 
-      // Test files with .js will still match our pattern in this implementation
-      // Our basic regex conversion doesn't handle negation patterns properly
-      assert.strictEqual(filterFunc('test.js'), true, 'Should match test.js files')
+      metalsmith = Metalsmith(fixture('copy-directory'))
+      metalsmith
+        .use(
+          plugin({
+            source: 'assets',
+            destination: 'assets',
+            ignore: ['styles/'] // Should exclude entire styles directory
+          })
+        )
+        .build((err) => {
+          assert.strictEqual(err, null)
 
-      // Restore original function
-      fs.statSync = originalStatSync
+          // Original JS file should exist
+          assert(fs.existsSync(fixture('copy-directory/build/assets/asset-file.js')))
+
+          // Entire styles directory should not exist
+          assert(!fs.existsSync(fixture('copy-directory/build/assets/styles')))
+          assert(!fs.existsSync(fixture('copy-directory/build/assets/styles/main.css')))
+          assert(!fs.existsSync(fixture('copy-directory/build/assets/styles/theme.css')))
+          assert(!fs.existsSync(fixture('copy-directory/build/assets/styles/nested')))
+          assert(!fs.existsSync(fixture('copy-directory/build/assets/styles/nested/nested.css')))
+
+          // Clean up test files
+          fs.removeSync(stylesDir)
+          done()
+        })
     })
   })
 

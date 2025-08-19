@@ -10,7 +10,7 @@ const debugNs = 'metalsmith-static-files'
  * @property {string} destination - Destination directory path relative to build directory
  * @property {boolean} [overwrite=true] - Whether to overwrite existing files
  * @property {boolean} [preserveTimestamps=false] - Whether to preserve timestamps when copying
- * @property {string[]} [filter] - Optional array of glob patterns to include/exclude files
+ * @property {string[]} [ignore] - Optional array of glob patterns to exclude files
  */
 
 /**
@@ -22,6 +22,55 @@ const defaults = {
   destination: 'assets',
   overwrite: true,
   preserveTimestamps: false
+}
+
+/**
+ * Convert glob pattern to regex
+ * @private
+ * @param {string} pattern - Glob pattern
+ * @returns {RegExp} - Converted regex
+ */
+function globToRegex(pattern) {
+  // Escape special regex characters except * and ?
+  const escaped = pattern
+    .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+    .replace(/\*/g, '[^/]*') // * should not match path separators
+    .replace(/\?/g, '[^/]') // ? should not match path separators
+
+  return new RegExp(`^${escaped}$`)
+}
+
+/**
+ * Check if a file path matches any of the glob patterns
+ * @private
+ * @param {string} filePath - File path to test
+ * @param {string[]} patterns - Array of glob patterns
+ * @returns {boolean} - True if file matches any pattern
+ */
+function matchesAnyPattern(filePath, patterns) {
+  if (!Array.isArray(patterns) || patterns.length === 0) {
+    return false
+  }
+
+  return patterns.some((pattern) => {
+    // Handle directory patterns specially
+    if (pattern.endsWith('/')) {
+      // 'styles/' should match any file within the styles directory
+      const dirPattern = pattern.slice(0, -1) // Remove trailing slash
+      return filePath.startsWith(`${dirPattern  }/`) || filePath === dirPattern
+    }
+
+    // Handle recursive directory patterns
+    if (pattern.endsWith('/**')) {
+      // 'styles/**' should match the directory and all subdirectories
+      const dirPattern = pattern.slice(0, -3) // Remove '/**'
+      return filePath.startsWith(`${dirPattern  }/`) || filePath === dirPattern
+    }
+
+    // Regular glob pattern matching
+    const regex = globToRegex(pattern)
+    return regex.test(filePath)
+  })
 }
 
 /**
@@ -56,7 +105,7 @@ function normalizeOptions(options) {
  *   destination: 'public',
  *   overwrite: false,
  *   preserveTimestamps: true,
- *   filter: ['**\/*.{jpg,png}', '!**\/*.svg']
+ *   ignore: ['**\/*.svg', '**\/*.tmp']
  * }));
  */
 function plugin(options) {
@@ -85,19 +134,24 @@ function plugin(options) {
         return done(errorMessage)
       }
 
-      // Create copy options
+      // Create copy options with improved filter logic
       const copyOptions = {
         overwrite: options.overwrite,
         preserveTimestamps: options.preserveTimestamps,
-        filter: options.filter
+        filter: options.ignore
           ? (src) => {
-              // If it's a directory, always include it
-              if (fs.statSync(src).isDirectory()) {
-                return true
+              // Get relative path from source for pattern matching
+              const relativePath = src.replace(source, '').replace(/^[/\\]/, '')
+
+              // Check ignore patterns for both files and directories
+              if (matchesAnyPattern(relativePath, options.ignore)) {
+                const itemType = fs.statSync(src).isDirectory() ? 'directory' : 'file'
+                debug('Ignoring %s: %s (matches ignore pattern)', itemType, relativePath)
+                return false
               }
 
-              // Otherwise, apply the filter patterns
-              return options.filter.some((pattern) => new RegExp(pattern.replace(/\*/g, '.*')).test(src))
+              // Include the file or directory
+              return true
             }
           : undefined
       }
@@ -131,9 +185,11 @@ function plugin(options) {
  */
 const metalsmithStaticFiles = plugin
 
-// Attach normalizeOptions to the plugin for testing purposes
+// Attach functions to the plugin for testing purposes
 // This avoids having mixed named and default exports while still
-// making the function available for tests
+// making the functions available for tests
 metalsmithStaticFiles.normalizeOptions = normalizeOptions
+metalsmithStaticFiles.globToRegex = globToRegex
+metalsmithStaticFiles.matchesAnyPattern = matchesAnyPattern
 
 export default metalsmithStaticFiles

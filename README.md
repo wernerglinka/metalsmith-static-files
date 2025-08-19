@@ -40,13 +40,13 @@ metalsmith.use(
 
 The plugin accepts the following options:
 
-| Option               | Type      | Default      | Description                                                |
-| -------------------- | --------- | ------------ | ---------------------------------------------------------- |
-| `source`             | `string`  | `src/assets` | Source directory path relative to Metalsmith root          |
-| `destination`        | `string`  | `assets`     | Destination directory path relative to build directory     |
-| `overwrite`          | `boolean` | `true`       | Whether to overwrite existing files                        |
-| `preserveTimestamps` | `boolean` | `false`      | Whether to preserve timestamps when copying files          |
-| `filter`             | `array`   | -            | Array of glob patterns to include/exclude files (optional) |
+| Option               | Type      | Default      | Description                                            |
+| -------------------- | --------- | ------------ | ------------------------------------------------------ |
+| `source`             | `string`  | `src/assets` | Source directory path relative to Metalsmith root      |
+| `destination`        | `string`  | `assets`     | Destination directory path relative to build directory |
+| `overwrite`          | `boolean` | `true`       | Whether to overwrite existing files                    |
+| `preserveTimestamps` | `boolean` | `false`      | Whether to preserve timestamps when copying files      |
+| `ignore`             | `array`   | -            | Array of glob patterns to exclude files (optional)     |
 
 ## Examples
 
@@ -81,7 +81,7 @@ Metalsmith(__dirname)
       destination: 'public',
       overwrite: false,
       preserveTimestamps: true,
-      filter: ['**/*.{jpg,png}', '!**/*.svg']
+      ignore: ['**/*.tmp', '**/*.log'] // Exclude temporary files
     })
   )
   .build((err) => {
@@ -91,7 +91,7 @@ Metalsmith(__dirname)
 
 ### Advanced Usage
 
-Here's an example with advanced options:
+#### Using Ignore Patterns
 
 ```js
 metalsmith.use(
@@ -100,10 +100,84 @@ metalsmith.use(
     destination: 'public',
     overwrite: false, // Don't overwrite existing files
     preserveTimestamps: true, // Keep original timestamps
-    filter: ['**/*.{jpg,png}', '!**/*.svg'] // Only include jpg/png files, exclude svg
+    ignore: ['**/*.tmp', '**/*.bak', '**/cache/**'] // Exclude temporary files and cache
   })
 )
 ```
+
+#### Common Use Cases
+
+```js
+// Exclude specific files
+metalsmith.use(
+  staticFiles({
+    source: 'lib/assets/',
+    destination: 'assets/',
+    ignore: ['main.css', 'main.js'] // Exclude processed files
+  })
+)
+
+// Exclude entire directories (all patterns work the same)
+metalsmith.use(
+  staticFiles({
+    source: 'lib/assets/',
+    destination: 'assets/',
+    ignore: ['styles/', 'temp/', 'cache/'] // Exclude entire directories
+  })
+)
+
+// Mixed patterns
+metalsmith.use(
+  staticFiles({
+    source: 'lib/assets/',
+    destination: 'assets/',
+    ignore: [
+      '*.tmp', // Exclude temp files
+      '*.log', // Exclude log files
+      'styles/', // Exclude styles directory
+      'node_modules/', // Exclude node_modules directory
+      '**/.DS_Store' // Exclude .DS_Store files everywhere
+    ]
+  })
+)
+```
+
+#### Directory Exclusion Patterns
+
+**Key Feature**: All directory patterns exclude the **entire directory structure** - no empty directories are created.
+
+All of these patterns have identical behavior and exclude the complete directory:
+
+- `'styles/'` - Directory with trailing slash
+- `'styles/*'` - All files in directory  
+- `'styles/**'` - Directory and all subdirectories
+
+**Important**: The plugin excludes directories at the directory level, not just their contents. This means when you use any of these patterns, the entire `styles/` directory and everything inside it will be completely excluded from the copy operation. No empty `styles/` directory will be created in the destination.
+
+**Example**:
+```
+Source directory:
+assets/
+├── images/
+│   └── logo.png
+├── styles/
+│   ├── main.css
+│   └── components/
+│       └── button.css
+└── scripts/
+    └── app.js
+
+With ignore: ['styles/']
+
+Result directory:
+assets/
+├── images/
+│   └── logo.png
+└── scripts/
+    └── app.js
+```
+
+Notice: No empty `styles/` directory is created - it's completely excluded.
 
 ## Debug
 
