@@ -1,6 +1,6 @@
 {
   "name": "metalsmith-static-files",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "description": "A Metalsmith plugin to copy a directory to the build directory",
   "keywords": [
     "metalsmith-static-files",
