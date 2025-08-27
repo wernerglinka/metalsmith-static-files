@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/wernerglinka/metalsmith-static-files#readme",
   "dependencies": {
-    "fs-extra": "^11.3.0"
+    "fs-extra": "^11.3.1"
   },
   "devDependencies": {
     "auto-changelog": "^2.5.0",
