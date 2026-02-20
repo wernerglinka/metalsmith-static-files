@@ -1,5 +1,21 @@
 # metalsmith-static-files
 
+## ⚠️ DEPRECATED
+
+**This plugin is deprecated.** As of **Metalsmith 2.7.0**, use the built-in `statik()` method instead:
+
+```js
+Metalsmith(__dirname)
+  .statik('assets/**')  // Pass-through copy without memory overhead
+  .build()
+```
+
+The built-in `statik()` method offers better performance (native `fs.copyFile` without reading into memory) and is maintained as part of Metalsmith core.
+
+See [Metalsmith #361](https://github.com/metalsmith/metalsmith/issues/361) for details.
+
+---
+
 A Metalsmith plugin to copy a directory to the build directory
 
 [![metalsmith:plugin][metalsmith-badge]][metalsmith-url]

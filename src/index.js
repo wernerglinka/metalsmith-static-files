@@ -5,6 +5,9 @@ import path from 'path'
 // Plugin namespace for debugging
 const debugNs = 'metalsmith-static-files'
 
+// Track if deprecation warning has been shown
+let deprecationWarningShown = false
+
 /**
  * @typedef {Object} Options
  * @property {string} source - Source directory path relative to metalsmith root
@@ -156,6 +159,18 @@ function plugin(options) {
   return function metalsmithStaticFiles(files, metalsmith, done) {
     try {
       const debug = metalsmith.debug ? metalsmith.debug(debugNs) : () => {}
+
+      // Show deprecation warning once
+      if (!deprecationWarningShown) {
+        deprecationWarningShown = true
+        console.warn(
+          '\x1b[33m%s\x1b[0m',
+          '[DEPRECATED] metalsmith-static-files is deprecated. ' +
+            'Use Metalsmith 2.7\'s built-in statik() method instead:\n' +
+            '  metalsmith.statik("assets/**")\n' +
+            'See: https://github.com/metalsmith/metalsmith/issues/361'
+        )
+      }
 
       debug('Running with options: %o', options)
 
