@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/wernerglinka/metalsmith-static-files#readme",
   "dependencies": {
-    "fs-extra": "^11.3.0"
+    "fs-extra": "^11.3.3"
   },
   "devDependencies": {
     "auto-changelog": "^2.5.0",
@@ -48,9 +48,9 @@
     "eslint-plugin-node": "^11.1.0",
     "metalsmith": "^2.7.0",
     "microbundle": "^0.15.1",
-    "mocha": "^11.7.1",
-    "prettier": "^3.6.2",
-    "release-it": "19.0.4"
+    "mocha": "^11.7.5",
+    "prettier": "^3.8.1",
+    "release-it": "19.2.4"
   },
   "scripts": {
     "build": "microbundle --entry src/index.js --output lib/index.js --target node -f esm,cjs --strict --generateTypes=false",
