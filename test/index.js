@@ -123,14 +123,14 @@ describe('metalsmith-static-files', () => {
     const originalExistsSync = fs.existsSync
     fs.existsSync = () => true
 
-    // Mock fs.copy to avoid actual filesystem operations
-    const originalCopy = fs.copy
-    fs.copy = () => Promise.resolve()
+    // Mock fs.readdir to return an empty directory
+    const originalReaddir = fs.readdir
+    fs.readdir = () => Promise.resolve([])
 
     metalsmith.use(plugin()).build((err) => {
       // Restore original functions
       fs.existsSync = originalExistsSync
-      fs.copy = originalCopy
+      fs.readdir = originalReaddir
 
       assert.strictEqual(err, null)
       done()
@@ -467,9 +467,13 @@ describe('metalsmith-static-files', () => {
     })
 
     it('should handle unexpected errors gracefully', (done) => {
-      // Mock fs.copy to throw an error
-      const originalCopy = fs.copy
-      fs.copy = () => Promise.reject(new Error('Unexpected test error'))
+      // Mock fs.existsSync to return true
+      const originalExistsSync = fs.existsSync
+      fs.existsSync = () => true
+
+      // Mock fs.readdir to throw an error
+      const originalReaddir = fs.readdir
+      fs.readdir = () => Promise.reject(new Error('Unexpected test error'))
 
       metalsmith
         .use(
@@ -486,12 +490,14 @@ describe('metalsmith-static-files', () => {
             assert(err.includes('Unexpected test error'), 'Error should contain original message')
             assert(consoleOutput.error.length > 0, 'Expected error to be logged to console')
 
-            // Restore original function
-            fs.copy = originalCopy
+            // Restore original functions
+            fs.existsSync = originalExistsSync
+            fs.readdir = originalReaddir
             done()
           } catch (e) {
-            // Restore original function even if the test fails
-            fs.copy = originalCopy
+            // Restore original functions even if the test fails
+            fs.existsSync = originalExistsSync
+            fs.readdir = originalReaddir
             done(e)
           }
         })
@@ -502,9 +508,9 @@ describe('metalsmith-static-files', () => {
       const originalExistsSync = fs.existsSync
       fs.existsSync = () => true
 
-      // Mock fs.copy to avoid actual filesystem operations
-      const originalCopy = fs.copy
-      fs.copy = () => Promise.resolve()
+      // Mock fs.readdir to return an empty directory
+      const originalReaddir = fs.readdir
+      fs.readdir = () => Promise.resolve([])
 
       metalsmith
         .use(
@@ -517,7 +523,7 @@ describe('metalsmith-static-files', () => {
           try {
             // Restore original functions
             fs.existsSync = originalExistsSync
-            fs.copy = originalCopy
+            fs.readdir = originalReaddir
 
             assert.strictEqual(err, null, 'Should not error with missing destination')
             // Should use default destination
@@ -525,7 +531,7 @@ describe('metalsmith-static-files', () => {
           } catch (e) {
             // Restore original functions even if the test fails
             fs.existsSync = originalExistsSync
-            fs.copy = originalCopy
+            fs.readdir = originalReaddir
             done(e)
           }
         })

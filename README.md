@@ -11,9 +11,20 @@ A Metalsmith plugin to copy a directory to the build directory
 
 ## Features
 
+- Compatible with Metalsmith 2.7.0+ (and earlier versions)
 - This plugin supports both ESM and CommonJS environments with no configuration needed:
   - ESM: `import staticFiles from 'metalsmith-static-files'`
   - CommonJS: `const staticFiles = require('metalsmith-static-files')`
+
+## Upgrading to v3.0.0
+
+Version 3.0.0 is a **breaking change** that ensures compatibility with Metalsmith 2.7.0+.
+
+**What changed:** The plugin now adds files to the Metalsmith `files` object instead of copying directly to disk. This ensures static files survive Metalsmith's clean phase, which changed in version 2.7.0.
+
+**Migration:** No code changes required. The API is identical - just update the package version. The change is internal to how files are handled.
+
+**Why this matters:** Metalsmith 2.7.0 changed the build order so that `clean` runs after plugins but before writing files. The previous approach (direct filesystem copy) would have files deleted by the clean phase. The new approach integrates properly with Metalsmith's file handling.
 
 ## Installation
 
