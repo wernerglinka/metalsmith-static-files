@@ -38,6 +38,9 @@
   "dependencies": {
     "fs-extra": "^11.3.3"
   },
+  "peerDependencies": {
+    "metalsmith": "^2.5.0"
+  },
   "devDependencies": {
     "auto-changelog": "^2.5.0",
     "c8": "^10.1.3",
